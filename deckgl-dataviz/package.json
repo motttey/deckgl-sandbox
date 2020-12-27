@@ -12,9 +12,9 @@
     "web-vitals": "^0.2.4",
     "axios": "0.19.2",
     "deck.gl": "8.1.6",
-    "@deck.gl/core": "8.0.15",
-    "@deck.gl/geo-layers": "8.0.15",
-    "@deck.gl/layers": "8.0.15",
+    "@deck.gl/core": "8.1.6",
+    "@deck.gl/geo-layers": "8.1.6",
+    "@deck.gl/layers": "8.1.6",
     "mapbox-gl": "1.7.0",
     "d3-scale": "3.0.0",
     "react-map-gl": "5.2.3"

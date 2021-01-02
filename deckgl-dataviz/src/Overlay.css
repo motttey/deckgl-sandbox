@@ -4,4 +4,24 @@ img {
   right: 0;
   top: 75%;
   margin: auto;
+
+  animation-name: flying;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  animation-duration: 3s;
+}
+
+@keyframes flying {
+  0% {
+    transform: translate(0, 20px);
+  }
+
+  50% {
+    transform: scale(0.9, 0.9);
+  }
+
+  100% {
+    transform: translate(0, -20px)
+  }
 }

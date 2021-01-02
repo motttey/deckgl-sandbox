@@ -2,7 +2,7 @@ import React from "react";
 import "./Overlay.css";
 
 export default function App({
-  img_url = "./logo192.png",
+  img_url = "./doraemon.png",
 })
 {
   return (

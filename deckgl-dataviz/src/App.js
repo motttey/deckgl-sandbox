@@ -26,11 +26,11 @@ const lightingEffect = new LightingEffect({ambientLight, pointLight});
 const landCover = [[[-74.0, 40.7], [-74.02, 40.7], [-74.02, 40.75], [-74.0, 40.75]]];
 
 const MAPBOX_ACCESS_TOKEN = "pk.eyJ1IjoibW90dHRleSIsImEiOiJja2o3M29ndGgzODhoMnhtMGRzdDIzZHR1In0.M0dUGIlz6Tp6Rx4a1qsNJQ";
-const mapStyle = "mapbox://styles/motttey/ckj73t4dg4wne19p2yfxv81uf";
+const mapStyle = "mapbox://styles/motttey/ckjfbccd71ea519qxze45w2j8";
 
 const INITIAL_VIEW_STATE = {
-  longitude: -74,
-  latitude: 40.72,
+  longitude: -74.01,
+  latitude: 40.71,
   zoom: 15,
   pitch: 45,
   bearing: 0,
@@ -97,7 +97,6 @@ export default function App({
 
   return (
     <div>
-      }
       <DeckGL
         layers={layers}
         initialViewState={initialViewState}

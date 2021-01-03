@@ -2,7 +2,7 @@ import React, {useState, useCallback} from "react";
 import DeckGL from "deck.gl";
 import { StaticMap } from 'react-map-gl';
 import { LightingEffect, AmbientLight, PointLight, LinearInterpolator } from '@deck.gl/core';
-import { PolygonLayer } from '@deck.gl/layers';
+import { PolygonLayer, BitmapLayer } from '@deck.gl/layers';
 
 const DATA_URL = {
   BUILDINGS:
@@ -23,7 +23,7 @@ const pointLight = new PointLight({
 
 const lightingEffect = new LightingEffect({ambientLight, pointLight});
 
-const landCover = [[[-74.0, 40.7], [-74.02, 40.7], [-74.02, 40.75], [-74.0, 40.75]]];
+const landCover = [[[-73.95, 40.65], [-74.05, 40.65], [-74.05, 40.75], [-74.0, 40.75]]];
 
 const MAPBOX_ACCESS_TOKEN = "pk.eyJ1IjoibW90dHRleSIsImEiOiJja2o3M29ndGgzODhoMnhtMGRzdDIzZHR1In0.M0dUGIlz6Tp6Rx4a1qsNJQ";
 const mapStyle = "mapbox://styles/motttey/ckjfbccd71ea519qxze45w2j8";
@@ -32,23 +32,22 @@ const INITIAL_VIEW_STATE = {
   longitude: -74.01,
   latitude: 40.71,
   zoom: 15,
-  pitch: 45,
+  pitch: 65,
   bearing: 0,
   maxZoom: 16,
   minZoom: 4,
 };
 
 const material = {
-  ambient: 0.1,
-  diffuse: 0.6,
+  ambient: 0.3,
+  diffuse: 0.5,
   shininess: 32,
-  specularColor: [60, 64, 70]
+  specularColor: [195, 100, 100]
 };
 
 const DEFAULT_THEME = {
-  buildingColor: [74, 80, 87],
-  trailColor0: [253, 128, 93],
-  trailColor1: [23, 184, 190],
+  buildingColor: [51, 51, 51],
+  lineColor: [0, 250, 154],
   material,
   effects: [lightingEffect]
 };
@@ -79,20 +78,29 @@ export default function App({
      id: 'ground',
      data: landCover,
      getPolygon: f => f,
-     stroked: false,
+     stroked: true,
      getFillColor: [0, 0, 0, 0]
    }),
    new PolygonLayer({
      id: 'buildings',
      data: buildings,
      extruded: true,
-     wireframe: false,
-     opacity: 0.5,
+     wireframe: true,
+     opacity: 0.8,
      getPolygon: f => f.polygon,
      getElevation: f => f.height,
      getFillColor: DEFAULT_THEME.buildingColor,
+     getLineColor: DEFAULT_THEME.lineColor,
+     getLineWidth: 1,
      material: DEFAULT_THEME.material
-   })
+   }),
+   /*
+   new BitmapLayer({
+    id: 'bitmap-layer',
+    bounds: [-74.0, 40.7, -74.1, 40.8],
+    image: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/sf-districts.png'
+  })
+  */
  ];
 
   return (
@@ -103,6 +111,7 @@ export default function App({
         onLoad={rotateCamera}
         effects={theme.effects}
         controller={true}
+        style={{zIndex: -1}}
       >
         <StaticMap
           reuseMaps

@@ -2,7 +2,7 @@ import React, {useState, useCallback} from "react";
 import DeckGL from "deck.gl";
 import { StaticMap } from 'react-map-gl';
 import { LightingEffect, AmbientLight, PointLight, LinearInterpolator } from '@deck.gl/core';
-import { PolygonLayer, BitmapLayer } from '@deck.gl/layers';
+import { PolygonLayer } from '@deck.gl/layers';
 
 const DATA_URL = {
   BUILDINGS:
@@ -93,14 +93,7 @@ export default function App({
      getLineColor: DEFAULT_THEME.lineColor,
      getLineWidth: 1,
      material: DEFAULT_THEME.material
-   }),
-   /*
-   new BitmapLayer({
-    id: 'bitmap-layer',
-    bounds: [-74.0, 40.7, -74.1, 40.8],
-    image: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/sf-districts.png'
-  })
-  */
+   })
  ];
 
   return (

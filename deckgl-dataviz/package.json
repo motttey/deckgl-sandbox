@@ -15,7 +15,7 @@
     "@deck.gl/core": "8.1.6",
     "@deck.gl/geo-layers": "8.1.6",
     "@deck.gl/layers": "8.1.6",
-    "mapbox-gl": "1.7.0",
+    "mapbox-gl": "1.13.2",
     "d3-scale": "4.0.2",
     "react-map-gl": "5.2.3"
   },

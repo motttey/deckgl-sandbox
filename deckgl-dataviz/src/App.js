@@ -2,7 +2,11 @@ import React, {useState, useCallback} from "react";
 import DeckGL from "deck.gl";
 import { StaticMap } from 'react-map-gl';
 import { LightingEffect, AmbientLight, PointLight, LinearInterpolator } from '@deck.gl/core';
-import { PolygonLayer } from '@deck.gl/layers';
+// import { PolygonLayer } from '@deck.gl/layers';
+import { Vector3 } from 'math.gl';
+
+import { Tile3DLayer } from '@deck.gl/geo-layers';
+import { Tiles3DLoader } from '@loaders.gl/3d-tiles';
 
 const DATA_URL = {
   BUILDINGS:
@@ -23,15 +27,13 @@ const pointLight = new PointLight({
 
 const lightingEffect = new LightingEffect({ambientLight, pointLight});
 
-const landCover = [[[-73.95, 40.65], [-74.05, 40.65], [-74.05, 40.75], [-74.0, 40.75]]];
-
 const MAPBOX_ACCESS_TOKEN = "pk.eyJ1IjoibW90dHRleSIsImEiOiJja2o3M29ndGgzODhoMnhtMGRzdDIzZHR1In0.M0dUGIlz6Tp6Rx4a1qsNJQ";
 const mapStyle = "mapbox://styles/motttey/ckjfbccd71ea519qxze45w2j8";
 
 const INITIAL_VIEW_STATE = {
-  longitude: -74.01,
-  latitude: 40.71,
-  zoom: 15,
+  longitude: 139.7940582,
+  latitude: 35.6297442,
+  zoom: 50,
   pitch: 65,
   bearing: 0,
   maxZoom: 16,
@@ -74,13 +76,7 @@ export default function App({
   }, []);
 
   const layers = [
-   new PolygonLayer({
-     id: 'ground',
-     data: landCover,
-     getPolygon: f => f,
-     stroked: true,
-     getFillColor: [0, 0, 0, 0]
-   }),
+   /*
    new PolygonLayer({
      id: 'buildings',
      data: buildings,
@@ -93,8 +89,27 @@ export default function App({
      getLineColor: DEFAULT_THEME.lineColor,
      getLineWidth: 1,
      material: DEFAULT_THEME.material
-   })
- ];
+   }),
+   */
+  new Tile3DLayer({
+    id: 'tile3dlayer',
+    pointSize: 0.5,
+    data: 'https://plateau.geospatial.jp/main/data/3d-tiles/bldg/13100_tokyo/13108_koto-ku/texture/tileset.json',
+    loader: Tiles3DLoader,
+    loadOptions: {
+      tileset: {
+        throttleRequests: false,
+      }
+    },
+    onTileLoad: (tileHeader) => {
+      tileHeader.content.cartographicOrigin = new Vector3(
+          tileHeader.content.cartographicOrigin.x,
+          tileHeader.content.cartographicOrigin.y,
+          tileHeader.content.cartographicOrigin.z - 40,
+      );
+    }
+  })
+];
 
   return (
     <div>

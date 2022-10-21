@@ -2,17 +2,26 @@ import React, {useState, useCallback} from "react";
 import DeckGL from "deck.gl";
 import { StaticMap } from 'react-map-gl';
 import { LightingEffect, AmbientLight, PointLight, LinearInterpolator } from '@deck.gl/core';
-// import { PolygonLayer } from '@deck.gl/layers';
+import { ScatterplotLayer } from '@deck.gl/layers';
 import { Vector3 } from 'math.gl';
 
 import { Tile3DLayer } from '@deck.gl/geo-layers';
 import { Tiles3DLoader } from '@loaders.gl/3d-tiles';
 
+/*
 const DATA_URL = {
   BUILDINGS:
     'https://raw.githubusercontent.com/visgl/deck.gl-data/master/examples/trips/buildings.json', // eslint-disable-line
   TRIPS: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/examples/trips/trips-v7.json' // eslint-disable-line
 };
+*/
+
+// Tokyo Bigsight
+const targetPoint = {
+  name: "国際展示場",
+  size: 10,
+  coordinates: [139.7940582, 35.6297442]
+}
 
 const ambientLight = new AmbientLight({
   color: [255, 255, 255],
@@ -31,8 +40,8 @@ const MAPBOX_ACCESS_TOKEN = "pk.eyJ1IjoibW90dHRleSIsImEiOiJja2o3M29ndGgzODhoMnht
 const mapStyle = "mapbox://styles/motttey/ckjfbccd71ea519qxze45w2j8";
 
 const INITIAL_VIEW_STATE = {
-  longitude: 139.7940582,
-  latitude: 35.6297442,
+  longitude: targetPoint.coordinates[0],
+  latitude: targetPoint.coordinates[1],
   zoom: 50,
   pitch: 65,
   bearing: 0,
@@ -57,10 +66,10 @@ const DEFAULT_THEME = {
 const transitionInterpolator = new LinearInterpolator(['bearing']);
 
 export default function App({
-  buildings = DATA_URL.BUILDINGS,
+  // buildings = DATA_URL.BUILDINGS,
   theme = DEFAULT_THEME,
-  loopLength = 1800, // unit corresponds to the timestamp in source data
-  animationSpeed = 1
+  // loopLength = 1800, // unit corresponds to the timestamp in source data
+  // animationSpeed = 1
 })
 {
   const [initialViewState, setInitialViewState] = useState(INITIAL_VIEW_STATE);
@@ -108,6 +117,22 @@ export default function App({
           tileHeader.content.cartographicOrigin.z - 40,
       );
     }
+  }),
+  new ScatterplotLayer({
+    id: 'scatterplot-layer',
+    data: [ targetPoint ],
+    pickable: true,
+    opacity: 1,
+    stroked: true,
+    filled: true,
+    radiusScale: 6,
+    radiusMinPixels: 1,
+    radiusMaxPixels: 100,
+    lineWidthMinPixels: 1,
+    getPosition: d => d.coordinates,
+    getRadius: d => Math.sqrt(d.size),
+    getFillColor: () => [255, 140, 0],
+    getLineColor: () => DEFAULT_THEME.lineColor
   })
 ];
 

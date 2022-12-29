@@ -3,6 +3,8 @@ import DeckGL from "deck.gl";
 import { StaticMap } from 'react-map-gl';
 import { LightingEffect, AmbientLight, PointLight, LinearInterpolator } from '@deck.gl/core';
 import { ScatterplotLayer } from '@deck.gl/layers';
+import { HexagonLayer } from '@deck.gl/aggregation-layers';
+
 import { Vector3 } from 'math.gl';
 
 import { Tile3DLayer } from '@deck.gl/geo-layers';
@@ -63,6 +65,15 @@ const DEFAULT_THEME = {
   effects: [lightingEffect]
 };
 
+const colorRange = [
+  [1, 152, 189],
+  [73, 227, 206],
+  [216, 254, 181],
+  [254, 237, 177],
+  [254, 173, 84],
+  [209, 55, 78]
+];
+
 const transitionInterpolator = new LinearInterpolator(['bearing']);
 
 export default function App({
@@ -118,6 +129,7 @@ export default function App({
       );
     }
   }),
+ /*
   new ScatterplotLayer({
     id: 'scatterplot-layer',
     data: [ targetPoint ],
@@ -133,6 +145,22 @@ export default function App({
     getRadius: d => Math.sqrt(d.size),
     getFillColor: () => [255, 140, 0],
     getLineColor: () => DEFAULT_THEME.lineColor
+  }),
+  */
+  new HexagonLayer({
+    id: 'hexagon-layer',
+    colorRange,
+    data: [ targetPoint ],
+    elevationRange: [0, 10],
+    radius: 250,
+    coverage: 1,
+    opacity: 0.5,
+    elevationScale: 1,
+    upperPercentile: 100,
+    getElevationWeight: () => 0,
+    elevationAggregation: 'SUM',
+    getColorValue: () => 1,
+    getPosition: (d) => d.coordinates
   })
 ];
 

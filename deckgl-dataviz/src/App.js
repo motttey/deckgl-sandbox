@@ -10,14 +10,6 @@ import { Vector3 } from 'math.gl';
 import { Tile3DLayer } from '@deck.gl/geo-layers';
 import { Tiles3DLoader } from '@loaders.gl/3d-tiles';
 
-/*
-const DATA_URL = {
-  BUILDINGS:
-    'https://raw.githubusercontent.com/visgl/deck.gl-data/master/examples/trips/buildings.json', // eslint-disable-line
-  TRIPS: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/examples/trips/trips-v7.json' // eslint-disable-line
-};
-*/
-
 // Tokyo Bigsight
 const targetPoint = {
   name: "国際展示場",
@@ -96,73 +88,56 @@ export default function App({
   }, []);
 
   const layers = [
-   /*
-   new PolygonLayer({
-     id: 'buildings',
-     data: buildings,
-     extruded: true,
-     wireframe: true,
-     opacity: 0.8,
-     getPolygon: f => f.polygon,
-     getElevation: f => f.height,
-     getFillColor: DEFAULT_THEME.buildingColor,
-     getLineColor: DEFAULT_THEME.lineColor,
-     getLineWidth: 1,
-     material: DEFAULT_THEME.material
-   }),
-   */
-  new Tile3DLayer({
-    id: 'tile3dlayer',
-    pointSize: 0.5,
-    data: 'https://plateau.geospatial.jp/main/data/3d-tiles/bldg/13100_tokyo/13108_koto-ku/texture/tileset.json',
-    loader: Tiles3DLoader,
-    loadOptions: {
-      tileset: {
-        throttleRequests: false,
+    new Tile3DLayer({
+      id: 'tile3dlayer',
+      pointSize: 0.5,
+      data: 'https://plateau.geospatial.jp/main/data/3d-tiles/bldg/13100_tokyo/13108_koto-ku/texture/tileset.json',
+      loader: Tiles3DLoader,
+      loadOptions: {
+        tileset: {
+          throttleRequests: false,
+        }
+      },
+      onTileLoad: (tileHeader) => {
+        tileHeader.content.cartographicOrigin = new Vector3(
+            tileHeader.content.cartographicOrigin.x,
+            tileHeader.content.cartographicOrigin.y,
+            tileHeader.content.cartographicOrigin.z - 40,
+        );
       }
-    },
-    onTileLoad: (tileHeader) => {
-      tileHeader.content.cartographicOrigin = new Vector3(
-          tileHeader.content.cartographicOrigin.x,
-          tileHeader.content.cartographicOrigin.y,
-          tileHeader.content.cartographicOrigin.z - 40,
-      );
-    }
-  }),
- /*
-  new ScatterplotLayer({
-    id: 'scatterplot-layer',
-    data: [ targetPoint ],
-    pickable: true,
-    opacity: 1,
-    stroked: true,
-    filled: true,
-    radiusScale: 6,
-    radiusMinPixels: 1,
-    radiusMaxPixels: 100,
-    lineWidthMinPixels: 1,
-    getPosition: d => d.coordinates,
-    getRadius: d => Math.sqrt(d.size),
-    getFillColor: () => [255, 140, 0],
-    getLineColor: () => DEFAULT_THEME.lineColor
-  }),
-  */
-  new HexagonLayer({
-    id: 'hexagon-layer',
-    colorRange,
-    data: [ targetPoint ],
-    elevationRange: [0, 10],
-    radius: 250,
-    coverage: 1,
-    opacity: 0.5,
-    elevationScale: 1,
-    upperPercentile: 100,
-    getElevationWeight: () => 0,
-    elevationAggregation: 'SUM',
-    getColorValue: () => 1,
-    getPosition: (d) => d.coordinates
-  })
-];
+    }),
+    new ScatterplotLayer({
+      id: 'scatterplot-layer',
+      data: [ targetPoint ],
+      pickable: true,
+      opacity: 1,
+      stroked: true,
+      filled: true,
+      radiusScale: 6,
+      radiusMinPixels: 1,
+      radiusMaxPixels: 100,
+      lineWidthMinPixels: 1,
+      getPosition: d => d.coordinates,
+      getRadius: d => Math.sqrt(d.size),
+      getFillColor: () => [255, 140, 0],
+      getLineColor: () => DEFAULT_THEME.lineColor
+    }),
+    new HexagonLayer({
+      id: 'hexagon-layer',
+      colorRange,
+      data: [ targetPoint ],
+      elevationRange: [0, 10],
+      radius: 250,
+      coverage: 1,
+      opacity: 0.5,
+      elevationScale: 1,
+      upperPercentile: 100,
+      getElevationWeight: () => 0,
+      elevationAggregation: 'SUM',
+      getColorValue: () => 1,
+      getPosition: (d) => d.coordinates
+    })
+  ];
 
   return (
     <div>

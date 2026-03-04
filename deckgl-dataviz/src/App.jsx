@@ -1,21 +1,21 @@
-import React, {useState, useCallback} from "react";
+import {useState, useCallback} from "react";
 import DeckGL from "deck.gl";
-import { StaticMap } from 'react-map-gl';
-import { LightingEffect, AmbientLight, PointLight, LinearInterpolator } from '@deck.gl/core';
-import { ScatterplotLayer } from '@deck.gl/layers';
-import { HexagonLayer } from '@deck.gl/aggregation-layers';
+import {StaticMap} from 'react-map-gl';
+import {LightingEffect, AmbientLight, PointLight, LinearInterpolator} from '@deck.gl/core';
+import {ScatterplotLayer} from '@deck.gl/layers';
+import {HexagonLayer} from '@deck.gl/aggregation-layers';
 
-import { Vector3 } from 'math.gl';
+import {Vector3} from 'math.gl';
 
-import { Tile3DLayer } from '@deck.gl/geo-layers';
-import { Tiles3DLoader } from '@loaders.gl/3d-tiles';
+import {Tile3DLayer} from '@deck.gl/geo-layers';
+import {Tiles3DLoader} from '@loaders.gl/3d-tiles';
 
 // Tokyo Bigsight
 const targetPoint = {
   name: "国際展示場",
   size: 10,
   coordinates: [139.7940582, 35.6297442]
-}
+};
 
 const ambientLight = new AmbientLight({
   color: [255, 255, 255],
@@ -30,8 +30,17 @@ const pointLight = new PointLight({
 
 const lightingEffect = new LightingEffect({ambientLight, pointLight});
 
-const MAPBOX_ACCESS_TOKEN = "pk.eyJ1IjoibW90dHRleSIsImEiOiJja2o3M29ndGgzODhoMnhtMGRzdDIzZHR1In0.M0dUGIlz6Tp6Rx4a1qsNJQ";
-const mapStyle = "mapbox://styles/motttey/ckjfbccd71ea519qxze45w2j8";
+const MAPBOX_ACCESS_TOKEN = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN ?? '';
+const mapStyle =
+  import.meta.env.VITE_MAPBOX_STYLE ??
+  "mapbox://styles/motttey/ckjfbccd71ea519qxze45w2j8";
+
+if (!MAPBOX_ACCESS_TOKEN) {
+  // eslint-disable-next-line no-console
+  console.warn(
+    '[deckgl-dataviz] VITE_MAPBOX_ACCESS_TOKEN is not set. Create deckgl-dataviz/.env.local'
+  );
+}
 
 const INITIAL_VIEW_STATE = {
   longitude: targetPoint.coordinates[0],
@@ -40,7 +49,7 @@ const INITIAL_VIEW_STATE = {
   pitch: 65,
   bearing: 0,
   maxZoom: 16,
-  minZoom: 4,
+  minZoom: 4
 };
 
 const material = {
@@ -70,11 +79,10 @@ const transitionInterpolator = new LinearInterpolator(['bearing']);
 
 export default function App({
   // buildings = DATA_URL.BUILDINGS,
-  theme = DEFAULT_THEME,
+  theme = DEFAULT_THEME
   // loopLength = 1800, // unit corresponds to the timestamp in source data
   // animationSpeed = 1
-})
-{
+}) {
   const [initialViewState, setInitialViewState] = useState(INITIAL_VIEW_STATE);
 
   const rotateCamera = useCallback(() => {
@@ -84,7 +92,7 @@ export default function App({
       transitionDuration: 1000,
       transitionInterpolator,
       onTransitionEnd: rotateCamera
-    }))
+    }));
   }, []);
 
   const layers = [
@@ -95,20 +103,20 @@ export default function App({
       loader: Tiles3DLoader,
       loadOptions: {
         tileset: {
-          throttleRequests: false,
+          throttleRequests: false
         }
       },
-      onTileLoad: (tileHeader) => {
+      onTileLoad: tileHeader => {
         tileHeader.content.cartographicOrigin = new Vector3(
-            tileHeader.content.cartographicOrigin.x,
-            tileHeader.content.cartographicOrigin.y,
-            tileHeader.content.cartographicOrigin.z - 40,
+          tileHeader.content.cartographicOrigin.x,
+          tileHeader.content.cartographicOrigin.y,
+          tileHeader.content.cartographicOrigin.z - 40
         );
       }
     }),
     new ScatterplotLayer({
       id: 'scatterplot-layer',
-      data: [ targetPoint ],
+      data: [targetPoint],
       pickable: true,
       opacity: 1,
       stroked: true,
@@ -125,7 +133,7 @@ export default function App({
     new HexagonLayer({
       id: 'hexagon-layer',
       colorRange,
-      data: [ targetPoint ],
+      data: [targetPoint],
       elevationRange: [0, 10],
       radius: 250,
       coverage: 1,
@@ -135,7 +143,7 @@ export default function App({
       getElevationWeight: () => 0,
       elevationAggregation: 'SUM',
       getColorValue: () => 1,
-      getPosition: (d) => d.coordinates
+      getPosition: d => d.coordinates
     })
   ];
 
@@ -156,6 +164,6 @@ export default function App({
           preventStyleDiffing={true}
         />
       </DeckGL>
-    </div >
+    </div>
   );
 }
